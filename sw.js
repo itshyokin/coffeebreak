@@ -1,10 +1,10 @@
 /* Coffee Break service worker: lets the site open offline.
    Strategy: serve from cache right away, refresh the cache in the background.
    Bump VERSION when you want every device to drop old files. */
-const VERSION = 'cb-v1';
+const VERSION = 'cb-v2';
 const SHELL = [
-  './', 'index.html', 'mandarin.html', 'manifest.webmanifest',
-  'css/app.css', 'css/mandarin.css', 'js/core.js', 'js/mandarin.js', 'data/hsk.js',
+  './', 'index.html', 'mandarin.html', 'trivia.html', 'wheel.html', 'blackjack.html', 'manifest.webmanifest',
+  'css/app.css', 'css/mandarin.css', 'css/games.css', 'js/core.js', 'js/mandarin.js', 'js/wiki.js', 'js/trivia.js', 'js/wheel.js', 'js/blackjack.js', 'data/hsk.js', 'data/phrases.js',
   'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
 ];
 self.addEventListener('install', (e) => {

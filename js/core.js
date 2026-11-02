@@ -37,7 +37,7 @@
       if (v == null || v === false) continue;
       if (k === 'class') n.className = v;
       else if (k === 'html') n.innerHTML = v;
-      else if (k === 'style' && typeof v === 'object') Object.assign(n.style, v);
+      else if (k === 'style' && typeof v === 'object') { for (const sk in v) { if (sk.startsWith('--')) n.style.setProperty(sk, v[sk]); else n.style[sk] = v[sk]; } }
       else if (k.startsWith('on') && typeof v === 'function') n.addEventListener(k.slice(2), v);
       else n.setAttribute(k, v === true ? '' : v);
     }
@@ -298,12 +298,45 @@
       set(n) { i = ((n % players.length) + players.length) % players.length; },
     };
   };
-  CB.renderScoreboard = function (container, players, scores, activeIndex) {
+  CB.money = (n) => (n < 0 ? '-$' : '$') + Math.abs(Math.round(n)).toLocaleString();
+  /** Scoreboard row. fmt: function to format a score (default plain number). sub: optional array of small second lines. */
+  CB.renderScoreboard = function (container, players, scores, activeIndex, fmt, sub) {
+    fmt = fmt || ((n) => (n || 0).toLocaleString());
     container.innerHTML = '';
     container.classList.add('scoreboard');
     players.forEach((p, i) => container.append(CB.el('div', {
-      class: 'score' + (i === activeIndex ? ' active' : ''), style: { '--pc': p.color },
-    }, CB.el('div', { class: 'name', style: { color: p.color } }, p.name), CB.el('div', { class: 'pts' }, (scores[i] || 0).toLocaleString()))));
+      class: 'score' + (i === activeIndex ? ' active' : '') + (p.out ? ' out' : ''), style: { '--pc': p.color },
+    }, CB.el('div', { class: 'name', style: { color: p.color } }, p.name), CB.el('div', { class: 'pts' }, fmt(scores[i] || 0)),
+      sub && sub[i] != null ? CB.el('div', { class: 'sub' }, sub[i]) : null)));
+  };
+
+  /* ---------- shared game setup screen (players + options + start) ---------- */
+  CB.setupScreen = function (container, cfg) {
+    container.innerHTML = '';
+    if (cfg.intro) container.append(CB.el('p', { class: 'muted', style: { margin: '4px 4px 0' } }, cfg.intro));
+    container.append(CB.el('div', { class: 'section-title' }, 'Players'));
+    const pBox = CB.el('div');
+    container.append(pBox);
+    const players = CB.players.render(pBox);
+    container.append(CB.el('div', { class: 'section-title' }, 'Game options'));
+    const oBox = CB.el('div');
+    container.append(oBox);
+    let opts = CB.options.render(oBox, cfg.gameId, cfg.schema, (o) => { opts = o; });
+    const start = CB.el('button', { class: 'btn primary block', style: { marginTop: '20px', minHeight: '58px', fontSize: '1.1rem' } }, cfg.startLabel || 'Start game');
+    start.addEventListener('click', () => { CB.sound.play('ding'); cfg.onStart(CB.players.active(players.state), CB.options.load(cfg.gameId, cfg.schema)); });
+    container.append(start);
+    return { start };
+  };
+
+  /* ---------- "pass the device" screen for hidden choices ---------- */
+  CB.passScreen = function (player, message, onReady) {
+    const back = CB.el('div', { class: 'pass-screen', style: { '--pc': player.color } },
+      CB.el('div', { class: 'pass-inner' },
+        CB.el('div', { class: 'pass-dot', style: { background: player.color } }),
+        CB.el('h2', null, player.name),
+        CB.el('p', null, message || 'Your turn — others look away!'),
+        CB.el('button', { class: 'btn primary', onclick: () => { back.remove(); onReady(); } }, 'I\'m ready')));
+    document.body.append(back);
   };
 
   /* ---------- shared top bar sound toggle ---------- */

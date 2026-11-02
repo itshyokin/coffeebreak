@@ -170,4 +170,19 @@ select.select { background: var(--bg-2); border: 0; border-radius: 10px; padding
 @keyframes up { from { transform: translateY(40px); opacity: .4; } }
 @media (min-width: 760px) { .sheet-back { align-items: center; } .sheet { border-radius: 22px; } }
 
+/* shared quiz bits */
+.choices { display: grid; gap: 10px; }
+.choice { min-height: 58px; text-align: left; padding: 12px 16px; border-radius: var(--radius-sm); border: 2px solid var(--line); background: var(--surface); font-size: 1rem; display: flex; align-items: center; gap: 12px; }
+.choice .k { width: 26px; height: 26px; flex: none; border-radius: 8px; background: var(--bg-2); display: grid; place-items: center; font-size: .8rem; font-weight: 700; color: var(--muted); }
+.choice.han { font-family: var(--font-han); font-size: 1.6rem; justify-content: flex-start; }
+.choice.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--surface)); }
+.choice.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--surface)); }
+.choice:disabled { cursor: default; }
+.feedback { min-height: 26px; text-align: center; font-weight: 700; margin: 12px 0; }
+.feedback.ok { color: var(--good); } .feedback.no { color: var(--bad); }
+
+.done-card { text-align: center; padding: 32px 20px; }
+.done-card .big { font-size: 3rem; }
+.done-card h2 { font-family: var(--font-display); margin: 8px 0 6px; }
+
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

@@ -63,16 +63,6 @@
 /* quiz */
 .q-head { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: .9rem; margin-bottom: 8px; }
 .q-prompt { padding: 26px 18px; text-align: center; margin: 10px 0 14px; position: relative; }
-.choices { display: grid; gap: 10px; }
-.choice { min-height: 58px; text-align: left; padding: 12px 16px; border-radius: var(--radius-sm); border: 2px solid var(--line); background: var(--surface); font-size: 1rem; display: flex; align-items: center; gap: 12px; }
-.choice .k { width: 26px; height: 26px; flex: none; border-radius: 8px; background: var(--bg-2); display: grid; place-items: center; font-size: .8rem; font-weight: 700; color: var(--muted); }
-.choice.han { font-family: var(--font-han); font-size: 1.6rem; justify-content: flex-start; }
-.choice.right { border-color: var(--good); background: color-mix(in srgb, var(--good) 14%, var(--surface)); }
-.choice.wrong { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 12%, var(--surface)); }
-.choice:disabled { cursor: default; }
-.feedback { min-height: 26px; text-align: center; font-weight: 700; margin: 12px 0; }
-.feedback.ok { color: var(--good); } .feedback.no { color: var(--bad); }
-
 /* memory */
 .mem-grid { display: grid; gap: 8px; grid-template-columns: repeat(3, 1fr); }
 .mem-grid.c4 { grid-template-columns: repeat(4, 1fr); }
@@ -111,9 +101,6 @@
 .word-row .st.learn { background: color-mix(in srgb, var(--tone4) 18%, transparent); color: var(--tone4); }
 .word-row .st.known { background: color-mix(in srgb, var(--good) 18%, transparent); color: var(--good); }
 
-.done-card { text-align: center; padding: 32px 20px; }
-.done-card .big { font-size: 3rem; }
-.done-card h2 { font-family: var(--font-display); margin: 8px 0 6px; }
 .notice { padding: 12px 14px; border-radius: var(--radius-sm); background: color-mix(in srgb, var(--warn) 16%, var(--surface)); font-size: .88rem; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .grades button { color: #1b120c; } }
 :root[data-theme="dark"] .grades button { color: #1b120c; }
