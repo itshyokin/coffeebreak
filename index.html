@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Coffee Break</title>
+<meta name="description" content="Little games for your coffee break — Mandarin practice, trivia, Wheel of Fortune and Blackjack. Play solo or with up to 4 players on one device.">
+<meta name="theme-color" content="#4a2c1d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<main class="app">
+  <div class="topbar">
+    <h1 aria-hidden="true"></h1>
+    <button class="icon-btn" id="soundBtn"></button>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings"></button>
+  </div>
+
+  <header class="hero">
+    <h1>Coffee Break</h1>
+    <p id="greeting">Little games for little breaks.</p>
+  </header>
+
+  <div class="section-title">Games</div>
+  <nav class="game-grid">
+    <a class="game-tile featured" href="mandarin.html">
+      <div class="glyph" aria-hidden="true">学中文</div>
+      <div>
+        <h2>Mandarin Practice</h2>
+        <p id="mandarinStatus">Flashcards, memory match, quizzes and tones · HSK 1–3</p>
+      </div>
+    </a>
+    <div class="game-tile soon" aria-disabled="true">
+      <span class="badge">Soon</span>
+      <div class="glyph" aria-hidden="true">❓</div>
+      <div><h2>Trivia Board</h2><p>Jeopardy-style, fresh from Wikipedia · 1–4 players</p></div>
+    </div>
+    <div class="game-tile soon" aria-disabled="true">
+      <span class="badge">Soon</span>
+      <div class="glyph" aria-hidden="true">🎡</div>
+      <div><h2>Wheel of Fortune</h2><p>Spin, guess, solve · 1–4 players</p></div>
+    </div>
+    <div class="game-tile soon" aria-disabled="true">
+      <span class="badge">Soon</span>
+      <div class="glyph" aria-hidden="true">🃏</div>
+      <div><h2>Blackjack</h2><p>Beat the dealer · 1–4 players</p></div>
+    </div>
+  </nav>
+
+  <p class="muted small" style="margin:28px 4px 0">Tip: in your browser menu, choose <b>Add to Home screen</b> (or <b>Install</b>) to open Coffee Break like an app.</p>
+</main>
+
+<script src="js/core.js"></script>
+<script>
+(function () {
+  CB.$('#settingsBtn').innerHTML = CB.icons.gear;
+  CB.mountSoundToggle(CB.$('#soundBtn'));
+
+  const h = new Date().getHours();
+  CB.$('#greeting').textContent = h < 12 ? 'Good morning. Grab a cup and play a round.' : h < 18 ? 'Afternoon break? Play a quick round.' : 'Evening wind-down. One more round?';
+
+  // Mandarin progress teaser
+  const m = CB.store.get('mandarin', null);
+  if (m && m.cards) {
+    const now = Date.now();
+    const cards = Object.values(m.cards);
+    const due = cards.filter((c) => !c.known && c.due <= now).length;
+    const learned = cards.filter((c) => c.reps > 0 || c.known).length;
+    CB.$('#mandarinStatus').textContent = learned + ' words learned' + (due ? ' · ' + due + ' due for review' : ' · all caught up');
+  }
+
+  CB.$('#settingsBtn').addEventListener('click', () => {
+    const body = CB.el('div');
+    CB.options.render(body, 'app', [
+      { key: 'theme', label: 'Theme', type: 'seg', default: 'auto', choices: [{ value: 'auto', label: 'Auto' }, { value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }] },
+      { key: 'sound', label: 'Sound effects', type: 'switch', default: true },
+      { key: 'volume', label: 'Volume', type: 'seg', default: 0.6, choices: [{ value: 0.3, label: 'Low' }, { value: 0.6, label: 'Med' }, { value: 1, label: 'High' }] },
+    ], (o) => { Object.assign(CB.settings, o); CB.saveSettings(); CB.$('#soundBtn').replaceWith(CB.$('#soundBtn').cloneNode()); CB.mountSoundToggle(CB.$('#soundBtn')); });
+    CB.sheet('Settings', body);
+  });
+  // keep the app-level option store in sync with the global settings
+  CB.options.save('app', { theme: CB.settings.theme, sound: CB.settings.sound, volume: CB.settings.volume });
+})();
+</script>
+</body>
+</html>
